@@ -1,0 +1,31 @@
+.App {
+  text-align: center;
+  width: 800px;
+  left: 50%;
+  transform: translate(-50%);
+  position: absolute;
+  margin-top: 48px;
+}
+
+.error {
+  color: red;
+}
+
+.page {
+  cursor: pointer;
+  margin: 32px;
+  font-size: 120%;
+}
+
+.page:hover {
+  color: grey;
+}
+
+.inputs {
+  margin: 8px;
+}
+
+.output {
+  overflow-wrap: break-word;
+  text-align: left !important;
+}

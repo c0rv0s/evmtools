@@ -80,7 +80,10 @@ class VariablesPermutation(tuple[Variable]):
 
 def pack_structs(variables):
     import itertools
-    variables = [Variable(*var.strip().split(' ')) for var in ' '.join(variables).split(';')[:-1]]
+    try:
+        variables = [Variable(*var.strip().split(' ')) for var in ' '.join(variables).split(';')[:-1]]
+    except:
+        return json.dumps({ "error": True })
 
     # noinspection PyUnboundLocalVariable
     permutations = [VariablesPermutation(permutation) for permutation in itertools.permutations(variables)]
