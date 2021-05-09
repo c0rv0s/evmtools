@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Tuple
 
 import functools
 from dataclasses import dataclass
@@ -47,7 +48,7 @@ class Variable:
 
 
 @functools.total_ordering
-class VariablesPermutation(tuple[Variable]):
+class VariablesPermutation(Tuple[Variable]):
     @property
     def num_slots(self):
         num_slots = 0
