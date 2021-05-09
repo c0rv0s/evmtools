@@ -7,6 +7,7 @@ const { TextArea } = Input;
 function App() {
   const [encode, setEncode] = useState(false)
   const [structs, setStructs] = useState(false)
+  const [api, setApi] = useState(false)
   const [structAargs, setStructArgs] = useState('')
   const [signature, setSignature] = useState('')
   const [params, setParams] = useState('')
@@ -59,11 +60,19 @@ function App() {
       <span className="page" onClick={() => { 
         setEncode(false)
         setStructs(true)
+        setApi(false)
       }}>Optimize Solidity Structs</span>
       <span className="page" onClick={() => { 
         setEncode(true)
         setStructs(false)
+        setApi(false)
       }}>Encode EVM Data</span>
+      <span className="page" onClick={() => { 
+        setEncode(false)
+        setStructs(false)
+        setApi(true)
+        setError(false)
+      }}>API Usage</span>
 
       <br />
       <br />
@@ -105,6 +114,25 @@ function App() {
             <br/>
             <br/>
             <div className="output">{encoded}</div>
+          </div>
+        )
+      }
+      {
+        api && (
+          <div>
+            Example API usage:
+            <p>Encode data:</p>
+            <a href="https://evm.tools/api/encode?signature=voteFor(uint)&params=[12]&address=0xBa37B002AbaFDd8E89a1995dA52740bbC013D992">
+              https://evm.tools/api/encode?signature=voteFor(uint)&params=[12]&address=0xBa37B002AbaFDd8E89a1995dA52740bbC013D992
+            </a>
+
+            <br />
+            <br />
+
+            <p>Pack structs:</p>
+            <a href='https://evm.tools/api/pack_structs?struct=["uint nums;", "string name;", "bytes something;"]'>
+              https://evm.tools/api/pack_structs?struct=["uint nums;", "string name;", "bytes something;"]
+            </a>
           </div>
         )
       }
