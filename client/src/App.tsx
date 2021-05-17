@@ -13,7 +13,8 @@ function App() {
   const [params, setParams] = useState('')
   const [target, setTarget] = useState('')
 
-  const [structed, setStructed] = useState([])
+  const [winningFunction, setWinningFunction] = useState([])
+  const [winningType, setWinningType] = useState([])
   const [encoded, setEncoded] = useState('')
   const [error, setError] = useState(false)
 
@@ -27,15 +28,18 @@ function App() {
       if (data.error) {
         console.error('Error:', error);
         setError(true)
-        setStructed([])
+        setWinningFunction([])
+        setWinningType([])
       } else {
-        setStructed(data.winning_order_function)
+        setWinningFunction(data.winning_order_function)
+        setWinningType(data.winning_order_type)
       }
     })
     .catch((error) => {
       console.error('Error:', error);
       setError(true)
-      setStructed([])
+      setWinningFunction([])
+      setWinningType([])
     });
   }
 
@@ -93,10 +97,32 @@ function App() {
             <Button type="primary" onClick={getStruct}>Optimize</Button>
             <br/>
             <br/>
+            
             <div className="output">{
-              structed.map(s => (
-                <div>{s} <br/></div>
-              ))
+              winningFunction.length > 0 && (
+                <div>
+                  Winning Order Function:
+                  {
+                    winningFunction.map(s => (
+                      <div>{s} <br/></div>
+                    ))
+                  }
+                </div>
+              )
+            }</div>
+            <br/>
+            <br/>
+            <div className="output">{
+              winningType.length > 0 && (
+                <div>
+                  Winning Order Type:
+                  {
+                    winningType.map(s => (
+                      <div>{s} <br/></div>
+                    ))
+                  }
+                </div>
+              )
             }</div>
           </div>
         )
@@ -105,9 +131,9 @@ function App() {
         encode && (
           <div>
             Encode an EVM function call
-            <Input placeholder="Signature" className="inputs" value={signature} onChange={(e) => setSignature(e.target.value)}/>
-            <Input placeholder="Params (comma seperated)" className="inputs" value={params} onChange={(e) => setParams(e.target.value)}/>
-            <Input placeholder="Target address" className="inputs" value={target} onChange={(e) => setTarget(e.target.value)}/>
+            <Input placeholder="Function signature, i.e. vote(uint,string)" className="inputs" value={signature} onChange={(e) => setSignature(e.target.value.replace(/\s/g, ''))}/>
+            <Input placeholder="Params (comma separated)" className="inputs" value={params} onChange={(e) => setParams(e.target.value)}/>
+            <Input placeholder="Target contract address" className="inputs" value={target} onChange={(e) => setTarget(e.target.value)}/>
             <br/>
             <br/>
             <Button type="primary" onClick={getEncoding}>Encode</Button>
