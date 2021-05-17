@@ -1,4 +1,4 @@
-# evm-utils
+# evmtools
 
 A collection of useful evm related utilities bundled into a web server with a React front end.
 
