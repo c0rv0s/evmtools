@@ -6,11 +6,7 @@ const { encodeCallScript } = require("@aragon/test-helpers/evmScript");
  * @param {string} signature Function signature
  * @param {any[]} params
  */
-const encodeActCall = (signature: string, params: any[]) => {
-  const sigBytes = abi.encodeFunctionSignature(signature);
-
-  const types = signature.replace(")", "").split("(")[1];
-
+const encodeActCall = (sigBytes: any, types: any, params: any[]) => {
   // No params, return signature directly
   if (types === "") {
     return sigBytes;
@@ -19,6 +15,18 @@ const encodeActCall = (signature: string, params: any[]) => {
   const paramBytes = abi.encodeParameters(types.split(","), params);
 
   return `${sigBytes}${paramBytes.slice(2)}`;
+};
+
+const encodedParams = (types: any, params: any[]) => {
+  const typesList = types.split(",");
+
+  return typesList.map((type: any, index: number) => {
+    return {
+      type,
+      param: params[index],
+      encoded: abi.encodeParameter(type, params[index]),
+    };
+  });
 };
 
 /**
@@ -31,12 +39,27 @@ const encodeActCall = (signature: string, params: any[]) => {
  * @param {any[]} params Function params
  * @param {string} target Address of contract that has address to call
  */
-export const encodeEvmScript = (signature: string, params: any[], address: string) => {
+export const encodeEvmScript = (
+  signature: string,
+  params: any[],
+  address: string
+) => {
+  const functionSignature = abi.encodeFunctionSignature(signature);
+  const types = signature.replace(")", "").split("(")[1];
   const action = {
     to: address,
-    calldata: encodeActCall(signature, params),
+    calldata: encodeActCall(functionSignature, types, params),
   };
-
+  const encodedParamsList = encodedParams(types, params);
   const script = encodeCallScript([action]);
-  return script;
+  return {
+    address,
+    functionSignature,
+    encodedParams: encodedParamsList,
+    script,
+  };
+};
+
+export const encodeEventSig = (signature: string) => {
+  return abi.encodeEventSignature(signature);
 };

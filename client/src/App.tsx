@@ -1,174 +1,248 @@
-import React, { useState } from 'react';
-import './App.css';
-import 'antd/dist/antd.css';
-import { Button, Input } from 'antd';
+import React, { useState } from "react";
+import "./App.css";
+import "antd/dist/antd.css";
+import { Button, Input, Checkbox } from "antd";
 const { TextArea } = Input;
 
 function App() {
-  const [encode, setEncode] = useState(false)
-  const [structs, setStructs] = useState(false)
-  const [api, setApi] = useState(false)
-  const [structAargs, setStructArgs] = useState('')
-  const [signature, setSignature] = useState('')
-  const [params, setParams] = useState('')
-  const [target, setTarget] = useState('')
+  const [encode, setEncode] = useState(false);
+  const [structs, setStructs] = useState(false);
+  const [api, setApi] = useState(false);
+  const [structAargs, setStructArgs] = useState("");
+  const [signature, setSignature] = useState("");
+  const [params, setParams] = useState("");
+  const [target, setTarget] = useState("");
+  const [sigOnly, setSigOnly] = useState(false);
 
-  const [winningFunction, setWinningFunction] = useState([])
-  const [winningType, setWinningType] = useState([])
-  const [encoded, setEncoded] = useState('')
-  const [error, setError] = useState(false)
+  const [winningFunction, setWinningFunction] = useState([]);
+  const [winningType, setWinningType] = useState([]);
+  const [encoded, setEncoded] = useState("");
+  const [error, setError] = useState(false);
 
   const getStruct = async () => {
-    setError(false)
-    const structParams = structAargs.split(';').flatMap(x => x ? (x + ';').trim() : [])
+    setError(false);
+    const structParams = structAargs
+      .split(";")
+      .flatMap((x: string) => (x ? (x + ";").trim() : []));
 
     fetch("/api/pack_structs?struct=" + JSON.stringify(structParams))
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        console.error('Error:', error);
-        setError(true)
-        setWinningFunction([])
-        setWinningType([])
-      } else {
-        setWinningFunction(data.winning_order_function)
-        setWinningType(data.winning_order_type)
-      }
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-      setError(true)
-      setWinningFunction([])
-      setWinningType([])
-    });
-  }
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          console.error("Error:", error);
+          setError(true);
+          setWinningFunction([]);
+          setWinningType([]);
+        } else {
+          setWinningFunction(data.winning_order_function);
+          setWinningType(data.winning_order_type);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError(true);
+        setWinningFunction([]);
+        setWinningType([]);
+      });
+  };
+
+  const encodingCall = () => {
+    setError(false);
+    if (sigOnly) getSignature();
+    else getEncoding();
+  };
 
   const getEncoding = () => {
-    setError(false)
-    const p = params.split(",").map((p: string) => p.trim())
-    fetch("/api/encode?signature=" + signature.trim() + "&params=" + JSON.stringify(p) + "&address=" + target)
-    .then(response => response.json())
-    .then(data => {
-      setEncoded(data.data)
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-      setError(true)
-      setEncoded('')
-    });
-  }
+    const p = params.split(",").map((p: string) => p.trim());
+    fetch(
+      "/api/encode?signature=" +
+        signature.trim() +
+        "&params=" +
+        JSON.stringify(p) +
+        "&address=" +
+        target
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data);
+        const dataString = `
+        Contract Address: ${data.data.address}\n
+        Function signature: ${data.data.functionSignature}\n
+        Params: ${data.data.encodedParams
+          .map(
+            (param: any) => `
+          Type: ${param.type}
+          Value: ${param.param}
+          Encoding: ${param.encoded}
+        `
+          )
+          .join("\n")}
+        Encoded script: ${data.data.script}
+        `;
+        setEncoded(dataString);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError(true);
+        setEncoded("");
+      });
+  };
+
+  const getSignature = () => {
+    fetch("/api/encode?signature=" + signature.trim())
+      .then((response) => response.json())
+      .then((data) => {
+        const dataString = `Event signature: ${data.data}`;
+        setEncoded(dataString);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError(true);
+        setEncoded("");
+      });
+  };
 
   return (
     <div className="App">
       <h1>EVM Tools</h1>
-      <span className="page" onClick={() => { 
-        setEncode(false)
-        setStructs(true)
-        setApi(false)
-      }}>Optimize Solidity Structs</span>
-      <span className="page" onClick={() => { 
-        setEncode(true)
-        setStructs(false)
-        setApi(false)
-      }}>Encode EVM Data</span>
-      <span className="page" onClick={() => { 
-        setEncode(false)
-        setStructs(false)
-        setApi(true)
-        setError(false)
-      }}>API Usage</span>
+      <span
+        className="page"
+        onClick={() => {
+          setEncode(false);
+          setStructs(true);
+          setApi(false);
+        }}
+      >
+        Optimize Solidity Structs
+      </span>
+      <span
+        className="page"
+        onClick={() => {
+          setEncode(true);
+          setStructs(false);
+          setApi(false);
+        }}
+      >
+        Encode EVM Data
+      </span>
+      <span
+        className="page"
+        onClick={() => {
+          setEncode(false);
+          setStructs(false);
+          setApi(true);
+          setError(false);
+        }}
+      >
+        API Usage
+      </span>
 
       <br />
       <br />
 
-      {
-        structs && (
-          <div>
-            Determine the optimal arrangement of struct parameters
-            <TextArea
-              className="inputs"
-              rows={4} 
-              placeholder="uint arg1; string arg2; bytes arg3; ..."
-              value={structAargs}
-              onChange={(e) => setStructArgs(e.target.value)}
-            />
-            <br/>
-            <br/>
-            <Button type="primary" onClick={getStruct}>Optimize</Button>
-            <br/>
-            <br/>
-            
-            <div className="output">{
-              winningFunction.length > 0 && (
-                <div>
-                  Winning Order Function:
-                  {
-                    winningFunction.map(s => (
-                      <div>{s} <br/></div>
-                    ))
-                  }
-                </div>
-              )
-            }</div>
-            <br/>
-            <br/>
-            <div className="output">{
-              winningType.length > 0 && (
-                <div>
-                  Winning Order Type:
-                  {
-                    winningType.map(s => (
-                      <div>{s} <br/></div>
-                    ))
-                  }
-                </div>
-              )
-            }</div>
+      {structs && (
+        <div>
+          Determine the optimal arrangement of struct parameters
+          <TextArea
+            className="inputs"
+            rows={4}
+            placeholder="uint arg1; string arg2; bytes arg3; ..."
+            value={structAargs}
+            onChange={(e) => setStructArgs(e.target.value)}
+          />
+          <br />
+          <br />
+          <Button type="primary" onClick={getStruct}>
+            Optimize
+          </Button>
+          <br />
+          <br />
+          <div className="output">
+            {winningFunction.length > 0 && (
+              <div>
+                Winning Order Function:
+                {winningFunction.map((s) => (
+                  <div>
+                    {s} <br />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )
-      }
-      {
-        encode && (
-          <div>
-            Encode an EVM function call
-            <Input placeholder="Function signature, i.e. vote(uint,string)" className="inputs" value={signature} onChange={(e) => setSignature(e.target.value.replace(/\s/g, ''))}/>
-            <Input placeholder="Params (comma separated)" className="inputs" value={params} onChange={(e) => setParams(e.target.value)}/>
-            <Input placeholder="Target contract address" className="inputs" value={target} onChange={(e) => setTarget(e.target.value)}/>
-            <br/>
-            <br/>
-            <Button type="primary" onClick={getEncoding}>Encode</Button>
-            <br/>
-            <br/>
-            <div className="output">{encoded}</div>
+          <br />
+          <br />
+          <div className="output">
+            {winningType.length > 0 && (
+              <div>
+                Winning Order Type:
+                {winningType.map((s) => (
+                  <div>
+                    {s} <br />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )
-      }
-      {
-        api && (
-          <div>
-            Example API usage:
-            <p>Encode data:</p>
-            <a href="https://evm.tools/api/encode?signature=voteFor(uint)&params=[12]&address=0xBa37B002AbaFDd8E89a1995dA52740bbC013D992">
-              https://evm.tools/api/encode?signature=voteFor(uint)&params=[12]&address=0xBa37B002AbaFDd8E89a1995dA52740bbC013D992
-            </a>
-
-            <br />
-            <br />
-
-            <p>Pack structs:</p>
-            <a href='https://evm.tools/api/pack_structs?struct=["uint nums;", "string name;", "bytes something;"]'>
-              https://evm.tools/api/pack_structs?struct=["uint nums;", "string name;", "bytes something;"]
-            </a>
-          </div>
-        )
-      }
-      <br/>
-      <br/>
-      {
-        error && (
-          <span className="error">There was an error in your inputs</span>
-        )
-      }
+        </div>
+      )}
+      {encode && (
+        <div>
+          Encode an EVM function call
+          <Input
+            placeholder="Function signature, i.e. vote(uint,string)"
+            className="inputs"
+            value={signature}
+            onChange={(e) => setSignature(e.target.value.replace(/\s/g, ""))}
+          />
+          <Checkbox
+            onChange={(e) => setSigOnly(e.target.checked)}
+            checked={sigOnly}
+          >
+            Event signature
+          </Checkbox>
+          <Input
+            placeholder="Params (comma separated)"
+            className="inputs"
+            value={params}
+            onChange={(e) => setParams(e.target.value)}
+          />
+          <Input
+            placeholder="Target contract address"
+            className="inputs"
+            value={target}
+            onChange={(e) => setTarget(e.target.value)}
+          />
+          <br />
+          <br />
+          <Button type="primary" onClick={encodingCall}>
+            Encode
+          </Button>
+          <br />
+          <br />
+          <div className="output">{encoded}</div>
+        </div>
+      )}
+      {api && (
+        <div>
+          Example API usage:
+          <p>Encode data:</p>
+          <a href="https://evm.tools/api/encode?signature=voteFor(uint)&params=[12]&address=0xBa37B002AbaFDd8E89a1995dA52740bbC013D992">
+            https://evm.tools/api/encode?signature=voteFor(uint)&params=[12]&address=0xBa37B002AbaFDd8E89a1995dA52740bbC013D992
+          </a>
+          <br />
+          <br />
+          <p>Pack structs:</p>
+          <a href='https://evm.tools/api/pack_structs?struct=["uint nums;", "string name;", "bytes something;"]'>
+            https://evm.tools/api/pack_structs?struct=["uint nums;", "string
+            name;", "bytes something;"]
+          </a>
+        </div>
+      )}
+      <br />
+      <br />
+      {error && (
+        <span className="error">There was an error in your inputs</span>
+      )}
     </div>
   );
 }

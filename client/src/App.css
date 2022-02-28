@@ -28,4 +28,5 @@
 .output {
   overflow-wrap: break-word;
   text-align: left !important;
+  white-space: pre-wrap;
 }
