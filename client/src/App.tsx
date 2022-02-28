@@ -72,7 +72,7 @@ function App() {
           .map(
             (param: any) => `
           Type: ${param.type}
-          Value: ${param.param}
+          Value: ${param.value}
           Encoding: ${param.encoded}
         `
           )
@@ -228,6 +228,12 @@ function App() {
           <p>Encode data:</p>
           <a href="https://evm.tools/api/encode?signature=voteFor(uint)&params=[12]&address=0xBa37B002AbaFDd8E89a1995dA52740bbC013D992">
             https://evm.tools/api/encode?signature=voteFor(uint)&params=[12]&address=0xBa37B002AbaFDd8E89a1995dA52740bbC013D992
+          </a>
+          <br />
+          <br />
+          <p>Encode event signature:</p>
+          <a href="https://evm.tools/api/encode?signature=Voted(uint)">
+            https://evm.tools/api/encode?signature=Voted(uint)
           </a>
           <br />
           <br />
