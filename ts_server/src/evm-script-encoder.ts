@@ -17,14 +17,21 @@ const encodeActCall = (sigBytes: any, types: any, params: any[]) => {
   return `${sigBytes}${paramBytes.slice(2)}`;
 };
 
-const encodedParams = (types: any, params: any[]) => {
+/**
+ * Creates a list of of params and their data
+ *
+ * @param types list of param types
+ * @param params list of param values
+ * @returns
+ */
+const encodedParams = (types: any, values: any[]) => {
   const typesList = types.split(",");
 
   return typesList.map((type: any, index: number) => {
     return {
       type,
-      param: params[index],
-      encoded: abi.encodeParameter(type, params[index]),
+      value: values[index],
+      encoded: abi.encodeParameter(type, values[index]),
     };
   });
 };
@@ -60,6 +67,12 @@ export const encodeEvmScript = (
   };
 };
 
+/**
+ * Encode an event signature
+ *
+ * @param signature event signature, i.e. Voted(uint)
+ * @returns topic[0] for an event log
+ */
 export const encodeEventSig = (signature: string) => {
   return abi.encodeEventSignature(signature);
 };
