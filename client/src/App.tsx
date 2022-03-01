@@ -5,7 +5,7 @@ import { Button, Input, Checkbox } from "antd";
 const { TextArea } = Input;
 
 function App() {
-  const [encode, setEncode] = useState(false);
+  const [encode, setEncode] = useState(true);
   const [structs, setStructs] = useState(false);
   const [api, setApi] = useState(false);
   const [structAargs, setStructArgs] = useState("");
@@ -92,7 +92,7 @@ function App() {
     fetch("/api/encode?signature=" + signature.trim())
       .then((response) => response.json())
       .then((data) => {
-        const dataString = `Event signature: ${data.data}`;
+        const dataString = `<b>Event signature:</b> ${data.data}`;
         setEncoded(dataString);
       })
       .catch((error) => {
@@ -107,16 +107,9 @@ function App() {
       <h1>EVM Tools</h1>
       <span
         className="page"
-        onClick={() => {
-          setEncode(false);
-          setStructs(true);
-          setApi(false);
+        style={{
+          textDecoration: encode ? "underline" : "none",
         }}
-      >
-        Optimize Solidity Structs
-      </span>
-      <span
-        className="page"
         onClick={() => {
           setEncode(true);
           setStructs(false);
@@ -127,6 +120,22 @@ function App() {
       </span>
       <span
         className="page"
+        style={{
+          textDecoration: structs ? "underline" : "none",
+        }}
+        onClick={() => {
+          setEncode(false);
+          setStructs(true);
+          setApi(false);
+        }}
+      >
+        Optimize Solidity Structs
+      </span>
+      <span
+        className="page"
+        style={{
+          textDecoration: api ? "underline" : "none",
+        }}
         onClick={() => {
           setEncode(false);
           setStructs(false);
@@ -139,6 +148,47 @@ function App() {
 
       <br />
       <br />
+
+      {encode && (
+        <div>
+          Encode an EVM function call
+          <Input
+            placeholder="Function signature, i.e. vote(uint,string)"
+            className="inputs"
+            value={signature}
+            onChange={(e) => setSignature(e.target.value.replace(/\s/g, ""))}
+          />
+          <Checkbox
+            onChange={(e) => setSigOnly(e.target.checked)}
+            checked={sigOnly}
+          >
+            Event signature
+          </Checkbox>
+          <Input
+            placeholder="Params (comma separated)"
+            className="inputs"
+            value={params}
+            onChange={(e) => setParams(e.target.value)}
+          />
+          <Input
+            placeholder="Target contract address"
+            className="inputs"
+            value={target}
+            onChange={(e) => setTarget(e.target.value)}
+          />
+          <br />
+          <br />
+          <Button type="primary" onClick={encodingCall}>
+            Encode
+          </Button>
+          <br />
+          <br />
+          <div
+            className="output"
+            dangerouslySetInnerHTML={{ __html: encoded }}
+          />
+        </div>
+      )}
 
       {structs && (
         <div>
@@ -185,46 +235,7 @@ function App() {
           </div>
         </div>
       )}
-      {encode && (
-        <div>
-          Encode an EVM function call
-          <Input
-            placeholder="Function signature, i.e. vote(uint,string)"
-            className="inputs"
-            value={signature}
-            onChange={(e) => setSignature(e.target.value.replace(/\s/g, ""))}
-          />
-          <Checkbox
-            onChange={(e) => setSigOnly(e.target.checked)}
-            checked={sigOnly}
-          >
-            Event signature
-          </Checkbox>
-          <Input
-            placeholder="Params (comma separated)"
-            className="inputs"
-            value={params}
-            onChange={(e) => setParams(e.target.value)}
-          />
-          <Input
-            placeholder="Target contract address"
-            className="inputs"
-            value={target}
-            onChange={(e) => setTarget(e.target.value)}
-          />
-          <br />
-          <br />
-          <Button type="primary" onClick={encodingCall}>
-            Encode
-          </Button>
-          <br />
-          <br />
-          <div
-            className="output"
-            dangerouslySetInnerHTML={{ __html: encoded }}
-          />
-        </div>
-      )}
+
       {api && (
         <div>
           Example API usage:
