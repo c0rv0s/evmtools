@@ -245,6 +245,12 @@ function App() {
           </a>
           <br />
           <br />
+          <p>Encode event signature:</p>
+          <a href="https://evm.tools/api/encode?signature=Voted(uint)">
+            https://evm.tools/api/encode?signature=Voted(uint)
+          </a>
+          <br />
+          <br />
           <p>Pack structs:</p>
           <a href='https://evm.tools/api/pack_structs?struct=["uint nums;", "string name;", "bytes something;"]'>
             https://evm.tools/api/pack_structs?struct=["uint nums;", "string
