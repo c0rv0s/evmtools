@@ -66,18 +66,18 @@ function App() {
       .then((data) => {
         console.log(data.data);
         const dataString = `
-        Contract Address: ${data.data.address}\n
-        Function signature: ${data.data.functionSignature}\n
-        Params: ${data.data.encodedParams
+        <b>Contract address:</b> ${data.data.address}\n
+        <b>Function selector:</b> ${data.data.functionSignature}\n
+        <b>Params:</b> ${data.data.encodedParams
           .map(
             (param: any) => `
-          Type: ${param.type}
-          Value: ${param.value}
-          Encoding: ${param.encoded}
+          <b>Type:</b> ${param.type}
+          <b>Value:</b> ${param.param}
+          <b>Encoding:</b> ${param.encoded}
         `
           )
           .join("\n")}
-        Encoded script: ${data.data.script}
+        <b>Full encoding:</b> ${data.data.script}
         `;
         setEncoded(dataString);
       })
@@ -219,7 +219,10 @@ function App() {
           </Button>
           <br />
           <br />
-          <div className="output">{encoded}</div>
+          <div
+            className="output"
+            dangerouslySetInnerHTML={{ __html: encoded }}
+          />
         </div>
       )}
       {api && (
@@ -228,12 +231,6 @@ function App() {
           <p>Encode data:</p>
           <a href="https://evm.tools/api/encode?signature=voteFor(uint)&params=[12]&address=0xBa37B002AbaFDd8E89a1995dA52740bbC013D992">
             https://evm.tools/api/encode?signature=voteFor(uint)&params=[12]&address=0xBa37B002AbaFDd8E89a1995dA52740bbC013D992
-          </a>
-          <br />
-          <br />
-          <p>Encode event signature:</p>
-          <a href="https://evm.tools/api/encode?signature=Voted(uint)">
-            https://evm.tools/api/encode?signature=Voted(uint)
           </a>
           <br />
           <br />
