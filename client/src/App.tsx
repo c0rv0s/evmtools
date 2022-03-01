@@ -210,7 +210,7 @@ function App() {
           <div className="output">
             {winningFunction.length > 0 && (
               <div>
-                Winning Order Function:
+                <b>Winning Order Function:</b>
                 {winningFunction.map((s) => (
                   <div>
                     {s} <br />
@@ -224,7 +224,7 @@ function App() {
           <div className="output">
             {winningType.length > 0 && (
               <div>
-                Winning Order Type:
+                <b>Winning Order Type:</b>
                 {winningType.map((s) => (
                   <div>
                     {s} <br />
