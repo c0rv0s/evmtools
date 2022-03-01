@@ -72,7 +72,7 @@ function App() {
           .map(
             (param: any) => `
           <b>Type:</b> ${param.type}
-          <b>Value:</b> ${param.param}
+          <b>Value:</b> ${param.value}
           <b>Encoding:</b> ${param.encoded}
         `
           )
