@@ -92,7 +92,10 @@ function App() {
     fetch("/api/encode?signature=" + signature.trim())
       .then((response) => response.json())
       .then((data) => {
-        const dataString = `<b>Event signature:</b> ${data.data}`;
+        const dataString = `
+        <b>Full encoding (event topic[0]):</b> ${data.data}\n
+        <b>First 4 bytes (solidity custom error):</b> ${data.data.slice(0, 10)}
+        `;
         setEncoded(dataString);
       })
       .catch((error) => {
@@ -162,17 +165,19 @@ function App() {
             onChange={(e) => setSigOnly(e.target.checked)}
             checked={sigOnly}
           >
-            Event signature
+            Signature only (for event signatures or error codes)
           </Checkbox>
           <Input
             placeholder="Params (comma separated)"
             className="inputs"
+            disabled={sigOnly}
             value={params}
             onChange={(e) => setParams(e.target.value)}
           />
           <Input
             placeholder="Target contract address"
             className="inputs"
+            disabled={sigOnly}
             value={target}
             onChange={(e) => setTarget(e.target.value)}
           />
