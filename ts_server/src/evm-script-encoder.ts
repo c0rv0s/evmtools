@@ -57,7 +57,7 @@ export const encodeEvmScript = (
     to: address,
     calldata: encodeActCall(functionSignature, types, params),
   };
-  const encodedParamsList = encodedParams(types, params);
+  const encodedParamsList = types ? encodedParams(types, params) : [];
   const script = encodeCallScript([action]);
   return {
     address,
