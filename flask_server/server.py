@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request
 import json
 from pack_struct import pack_structs
 

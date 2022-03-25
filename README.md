@@ -8,4 +8,34 @@ Finds the best ordering for struct arguments to save gas.
 
 ## Encode Data
 
-Encodes a function call with params.
+Encodes a function call with params or an event signature or custom solidity error.
+
+## Usage
+
+In client/:
+
+```bash
+yarn
+yarn build
+```
+
+In flask_server/:
+
+```bash
+pip install -r requirements.txt
+export FLASK_APP=server.py
+nohup flask run &
+```
+
+In ts_server/:
+
+```bash
+yarn
+yarn build
+```
+
+With pm2 installed:
+
+```bash
+pm2 start dist/index.js
+```
