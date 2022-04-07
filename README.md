@@ -12,6 +12,12 @@ Encodes a function call with params or an event signature or custom solidity err
 
 ## Usage
 
+```bash
+./start.sh
+```
+
+Or manually:
+
 In client/:
 
 ```bash
