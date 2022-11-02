@@ -21,7 +21,7 @@ function App() {
 
   const getStruct = async () => {
     setError(false);
-    const structParams = structAargs
+    const structParams = structAargs.trim()
       .split(";")
       .flatMap((x: string) => (x ? (x + ";").trim() : []));
 
