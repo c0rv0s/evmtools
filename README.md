@@ -30,7 +30,7 @@ In flask_server/:
 ```bash
 pip install -r requirements.txt
 export FLASK_APP=server.py
-nohup flask run &
+pm2 start server.py
 ```
 
 In ts_server/:
