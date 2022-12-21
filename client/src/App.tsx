@@ -21,7 +21,8 @@ function App() {
 
   const getStruct = async () => {
     setError(false);
-    const structParams = structAargs.trim()
+    const structParams = structAargs
+      .trim()
       .split(";")
       .flatMap((x: string) => (x ? (x + ";").trim() : []));
 
@@ -268,6 +269,17 @@ function App() {
       {error && (
         <span className="error">There was an error in your inputs</span>
       )}
+      <div
+        style={{
+          top: "84vh",
+          position: "absolute",
+          left: "calc(50% - 38.5px)",
+        }}
+      >
+        <i>
+          by <a href="https://c0rv0s.eth.limo/">@c0rv0s</a>
+        </i>
+      </div>
     </div>
   );
 }
